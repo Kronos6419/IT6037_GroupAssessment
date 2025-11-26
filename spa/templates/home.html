@@ -37,8 +37,10 @@
 
 <br>
 
+<!-- Changed for using the add mode in the view for now. -->
 {% if user.is_authenticated and user.is_tutor %}
-<button onclick="open_article_form()">Add Article</button>
+{% comment %} <button onclick="open_article_form()">Add Article</button> {% endcomment %}
+<button onclick="window.location.href='?mode=add'">Add Article</button>
 {% endif %}
 
 <br><br>
@@ -59,6 +61,15 @@
         <p>Painting Dimensions: {{ article.painting_dimensions }}</p>
         <p>Painting Location: {{ article.painting_location }}</p>
         <p>Developer: {{ article.developer }}</p>
+
+        <!-- Added the edit/delete buttons. They don't do anything yet -->
+        {% if user.is_authenticated and user.is_tutor %}
+            <button onclick="window.location.href='?edit={{ article.id }}'">Edit Article</button>
+        {% endif %}
+
+        {% if user.is_authenticated and user.is_admin %}
+            <button onclick="window.location.href='?delete={{ article.id }}'">Delete Article</button>
+        {% endif %}
     </div>
 {% endfor %}
 
