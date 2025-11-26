@@ -1,0 +1,267 @@
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    color: #ffffff;
+}
+
+#auth-area button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#auth-area button:hover {
+    background-color: #0056b3;
+}
+
+hr {
+    border: 1px solid #444;
+    margin: 20px 0;
+}
+
+#search_form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+#search_form input,
+#search_form select {
+    padding: 12px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: #fff;
+    min-width: 200px;
+}
+
+#search_form input::placeholder {
+    color: #aaa;
+}
+
+#search_form button {
+    padding: 12px 24px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#search_form button:hover {
+    background-color: #218838;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+/* Add Article Button (only for tutors) */
+button[onclick="open_article_form()"] {
+    background-color: #ffc107;
+    color: #212529;
+    font-weight: bold;
+}
+
+button[onclick="open_article_form()"]:hover {
+    background-color: #e0a800;
+}
+
+/* Article Cards */
+.article-card {
+    background-color: #2d2d2d;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    position: relative;
+    transition: transform 0.2s;
+}
+
+.article-card:hover {
+    transform: translateY(-5px);
+}
+
+.article-card h2 {
+    color: #ffffff;
+    margin-bottom: 10px;
+    font-size: 1.6rem;
+}
+
+.article-card p {
+    margin: 8px 0;
+    color: #cccccc;
+}
+
+.article-card p strong {
+    color: #ffffff;
+}
+
+/* Edit and Delete Buttons inside cards */
+.article-card .actions {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.article-card .actions button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+}
+
+.article-card .actions button:first-child {
+    background-color: #007bff;
+}
+
+.article-card .actions button:last-child {
+    background-color: #dc3545;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    background-color: #2d2d2d;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.modal h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffffff;
+    font-size: 1.8rem;
+}
+
+.modal label {
+    display: block;
+    margin: 12px 0 6px;
+    color: #cccccc;
+    font-weight: 500;
+}
+
+.modal input,
+.modal select,
+.modal textarea {
+    width: 100%;
+    padding: 12px;
+    background-color: #3d3d3d;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.modal textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.modal .btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.modal button {
+    padding: 12px 30px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.modal button:first-child {
+    background-color: #28a745;
+}
+
+.modal button:last-child {
+    background-color: #6c757d;
+}
+
+.modal button:hover {
+    opacity: 0.9;
+}
+
+/* Specific Modal Adjustments */
+#login-modal .btn-group button:first-child { background-color: #007bff; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    #search_form {
+        flex-direction: column;
+    }
+
+    #search_form input,
+    #search_form select,
+    #search_form button {
+        width: 100%;
+    }
+
+    .article-card .actions {
+        position: static;
+        margin-top: 15px;
+        justify-content: flex-end;
+    }
+}
