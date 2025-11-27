@@ -1,77 +1,135 @@
+<!-- @format -->
+<!-- vscode-html -->
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Monke Library</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/static.css' %}">
-</head>
+    <head>
+        <title>Monke Library</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/static.css' %}">
+        <link rel="stylesheet" href="{% static 'css/popup.css' %}">
+    </head>
 
-<body>
+    <body>
+        <header>
+            <h1>Monke Library</h1>
 
-<header>
-    <h1>Monke Library</h1>
+            <div id="auth_area">
+                {% if user.is_authenticated %}
+                    <button onclick="logout_user()">Logout</button>
+                {% else %}
+                    <button onclick="open_login()">Login</button>
+                {% endif %}
+                <span id="auth_status"></span>
+            </div>
+        </header>
 
-    <div id="auth-area">
-        {% if user.is_authenticated %}
-            <button onclick="logoutUser()">Logout</button>
-        {% else %}
-            <button onclick="openLogin()">Login</button>
-        {% endif %}
-    </div>
-</header>
+        <hr>
 
-<hr>
+        <form id="search_form" method="get" action="">
+            <button type="submit">Search</button>
 
-<form id="search_form">
-    <button type="button" onclick="load_articles()">Search</button>
-    <!-- This is the search bar --> 
-    <input type="text" id="search_input" placeholder="Search...">
-    <!-- This is the category filter dropdown list -->
-    <select id="category_filter">
-        <option value="">All</option>
-        {% for c in categories %}
-            <option value="{{ c.category_name }}">{{ c.category_name }}</option>
-        {% endfor %}
-    </select>
-</form>
+            <input type="text"
+                id="search_input"
+                name="q"
+                placeholder="Search..."
+                value="{{ request.GET.q }}">
 
-<br>
+            <select id="category_filter" name="category">
+                <option value="">All</option>
+                {% for c in categories %}
+                    <option value="{{ c.id }}"
+                        {% if request.GET.category == c.id|stringformat:"s" %}selected{% endif %}>
+                        {{ c.category_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
 
-<!-- Changed for using the add mode in the view for now. -->
-{% if user.is_authenticated and user.is_tutor %}
-{% comment %} <button onclick="open_article_form()">Add Article</button> {% endcomment %}
-<button onclick="window.location.href='?mode=add'">Add Article</button>
-{% endif %}
+        <!-- categories JSON for JS (Add Article popup) -->
+        <script id="category_data" type="application/json">
+        [
+            {% for c in categories %}
+            {"id": {{ c.id }}, "name": "{{ c.category_name|escapejs }}"}{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ]
+        </script>
 
-<br><br>
+        <br>
 
-{% for article in articles %}
-    <div class="article-card">
-        <h2>Title: {{ article.article_name }}</h2>
-        <p>Type: {{ article.type }}</p>
-        <p>Category: {{ article.category_name.category_name }}</p>
-        <p>Born: {{ article.born }}</p>
-        <p>Died: {{ article.died }}</p>
-        <p>Nationality: {{ article.nationality }}</p>
-        <p>Known For: {{ article.known_for }}</p>
-        <p>Notable Work: {{ article.notable_work }}</p>
-        <p>About: {{ article.about}}</p>
-        <p>Painting Year: {{ article.painting_year }}</p>
-        <p>Painting Medium: {{ article.painting_medium }}</p>
-        <p>Painting Dimensions: {{ article.painting_dimensions }}</p>
-        <p>Painting Location: {{ article.painting_location }}</p>
-        <p>Developer: {{ article.developer }}</p>
-
-        <!-- Added the edit/delete buttons. They don't do anything yet -->
         {% if user.is_authenticated and user.is_tutor %}
-            <button onclick="window.location.href='?edit={{ article.id }}'">Edit Article</button>
+        <button onclick="open_add_article()">Add Article</button>
         {% endif %}
 
-        {% if user.is_authenticated and user.is_admin %}
-            <button onclick="window.location.href='?delete={{ article.id }}'">Delete Article</button>
-        {% endif %}
-    </div>
-{% endfor %}
+        <br><br>
 
-</body>
+        {% for article in articles %}
+            <div class="article_card">
+                <h2>Name: {{ article.name }}</h2>
+                <p>Type: {{ article.type }}</p>
+                <p>Category: {{ article.category.category_name }}</p>
+
+                {% if article.born %}
+                    <p>Born: {{ article.born }}</p>
+                {% endif %}
+                {% if article.died %}
+                    <p>Died: {{ article.died }}</p>
+                {% endif %}
+                {% if article.nationality %}
+                    <p>Nationality: {{ article.nationality }}</p>
+                {% endif %}
+                {% if article.known_for %}
+                    <p>Known For: {{ article.known_for }}</p>
+                {% endif %}
+                {% if article.notable_work %}
+                    <p>Notable Work: {{ article.notable_work }}</p>
+                {% endif %}
+                {% if article.about %}
+                    <p>About: {{ article.about }}</p>
+                {% endif %}
+                {% if article.year %}
+                    <p>Year: {{ article.year }}</p>
+                {% endif %}
+                {% if article.medium %}
+                    <p>Medium: {{ article.medium }}</p>
+                {% endif %}
+                {% if article.dimensions %}
+                    <p>Dimensions: {{ article.dimensions }}</p>
+                {% endif %}
+                {% if article.location %}
+                    <p>Location: {{ article.location }}</p>
+                {% endif %}
+                {% if article.designed_by %}
+                    <p>Designed By: {{ article.designed_by }}</p>
+                {% endif %}
+                {% if article.developer %}
+                    <p>Developer: {{ article.developer }}</p>
+                {% endif %}
+
+                {% if user.is_authenticated and user.is_tutor %}
+                <button
+                    type="button"
+                    class="edit_article_button"
+                    data-article-id="{{ article.id }}"
+                >
+                    Edit Article
+                </button>
+                {% endif %}
+
+                {% if user.is_authenticated and user.is_admin %}
+                <button
+                    type="button"
+                    class="delete_article_button"
+                    data-article-id="{{ article.id }}"
+                >
+                    Delete Article
+                </button>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+
+        <script src="{% static 'js/login_popup.js' %}"></script>
+        <script src="{% static 'js/auth_status.js' %}"></script>
+        <script src="{% static 'js/article_popup.js' %}"></script>
+    </body>
 </html>
