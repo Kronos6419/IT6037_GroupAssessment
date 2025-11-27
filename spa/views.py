@@ -13,20 +13,36 @@ from .forms import ArticleForm
 
 UserModel = get_user_model()
 
-
 def view_articles(request):
     """
     Main home page: list/filter/search articles.
+    Unauthenticated users can access page but cannot see articles.
     """
+
+    # Always load categories
+    categories = Category.objects.all()
+
+    # If NOT logged in -> no articles
+
+    if not request.user.is_authenticated:
+        context = {
+            "categories": categories,
+            "articles": [],   # important
+        }
+        return render(request, "home.html", context)
+
+    # Logged in users -> apply search & filter
+
     category_id = request.GET.get("category")
     q = request.GET.get("q", "")
 
-    categories = Category.objects.all()
     articles = Article.objects.all()
 
+    # Filter by category
     if category_id:
-        articles = articles.filter(category__id=category_id)
+        articles = articles.filter(category_id=category_id)
 
+    # Filter by search keyword
     if q:
         articles = articles.filter(name__icontains=q)
 
@@ -34,8 +50,8 @@ def view_articles(request):
         "categories": categories,
         "articles": articles,
     }
-    return render(request, "home.html", context)
 
+    return render(request, "home.html", context)
 
 @login_required
 def add_article(request):
