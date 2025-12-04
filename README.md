@@ -73,7 +73,11 @@ password: monkeadmin@library123
 
 ##### For logging in using template tutor
 username: tutor1 <br>
-password: monkeatutor@library123
+password: monketutor@library123
+
+##### For logging in using template student
+username: student1 <br>
+password: monkestudent@library123
 
 <br>
 
